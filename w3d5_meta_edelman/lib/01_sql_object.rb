@@ -21,7 +21,6 @@ class SQLObject
         self.attributes[col]= value
       end
     end
-
   end
 
   def self.table_name=(table_name)
@@ -30,7 +29,6 @@ class SQLObject
 
   def self.table_name
     @table_name || name.downcase.pluralize
-    # ...
   end
 
   def self.all
@@ -46,8 +44,6 @@ class SQLObject
     results.map do |result|
       self.new(result)
     end
-
-    # ...
   end
 
   def self.find(id)
@@ -58,7 +54,6 @@ class SQLObject
     SQL
 
     parse_all(results).first
-    # ...
   end
 
   def initialize(params = {})
@@ -70,18 +65,14 @@ class SQLObject
         raise "unknown attribute '#{atr}'"
       end
     end
-
-    # ...
   end
 
   def attributes
     @attributes ||= {}
-    # ...
   end
 
   def attribute_values
     self.class.columns.map { |attr| self.send(attr) }
-    # ...
   end
 
   def insert
@@ -95,12 +86,10 @@ class SQLObject
     SQL
 
     self.id = DBConnection.last_insert_row_id
-    # ...
   end
 
   def update
     cols = self.class.columns.join(" = ?,")
-
 
     whateverthisis = DBConnection.execute(<<-SQL, *attribute_values, id)
       UPDATE #{self.class.table_name}
@@ -109,10 +98,14 @@ class SQLObject
     SQL
 
     self.id = DBConnection.last_insert_row_id
-    # ...
   end
 
   def save
-    # ...
+    if id.nil?
+      insert
+    else
+      update
+    end
   end
+
 end
